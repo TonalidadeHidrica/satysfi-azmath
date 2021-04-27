@@ -55,6 +55,12 @@ module AZMathParens : sig
   direct \pangle : [length?; math;] math-cmd
 
   direct \set-builder : [math; math;] math-cmd
+  direct \bra : [length?; math;] math-cmd
+  direct \ket : [length?; math;] math-cmd
+  direct \ip : [length?; math; math] math-cmd
+  direct \mel : [length?; math; math; math] math-cmd
+  direct \ev : [length?; math; math] math-cmd
+
   direct \overbrace : [math] math-cmd
   direct \underbrace : [math] math-cmd
 
@@ -510,6 +516,49 @@ let pads-square-bracket is-open fsize =
     let mparen = paren-scheme (gr-abs-bracket-m 0.5pt) half-height-default in
     let rparen = paren-scheme (gr-curly-bracket false) half-height-default in
     math-paren-with-middle lparen rparen mparen [m; m-cond]
+
+  let-math \bra ?:ht phi =
+    let half-height = match ht with
+      | Some(ht) -> half-height-fixed ht
+      | None -> half-height-default
+    in
+    math-paren
+      (paren-scheme (gr-angle-bracket 0.5pt true) half-height)
+      (paren-scheme (gr-abs-bracket 0.5pt false) half-height)
+      phi
+
+  let-math \ket ?:ht phi =
+    let half-height = match ht with
+      | Some(ht) -> half-height-fixed ht
+      | None -> half-height-default
+    in
+    math-paren
+      (paren-scheme (gr-abs-bracket 0.5pt true) half-height)
+      (paren-scheme (gr-angle-bracket 0.5pt false) half-height)
+      phi
+
+  % TODO This shares almost identical process to \mel
+  let-math \ip ?:ht a b =
+    let half-height = match ht with
+      | Some(ht) -> half-height-fixed ht
+      | None -> half-height-default
+    in
+    let lparen = paren-scheme (gr-angle-bracket 0.5pt true) half-height in
+    let mparen = paren-scheme (gr-abs-bracket-m 0.5pt) half-height in
+    let rparen = paren-scheme (gr-angle-bracket 0.5pt false) half-height in
+    math-paren-with-middle lparen rparen mparen [a; b]
+
+  let-math \mel ?:ht n a m =
+    let half-height = match ht with
+      | Some(ht) -> half-height-fixed ht
+      | None -> half-height-default
+    in
+    let lparen = paren-scheme (gr-angle-bracket 0.5pt true) half-height in
+    let mparen = paren-scheme (gr-abs-bracket-m 0.5pt) half-height in
+    let rparen = paren-scheme (gr-angle-bracket 0.5pt false) half-height in
+    math-paren-with-middle lparen rparen mparen [n; a; m]
+
+  let-math \ev ?:ht a phi = ${\mel{#phi}{#a}{#phi}}
 
   let-math \overbrace m =
     let mathpullf _ sup ctx =
