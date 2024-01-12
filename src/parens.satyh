@@ -17,6 +17,7 @@ type parensizef = length -> length -> length -> length -> length
 module AZMathParens : sig
 
   direct \genparen : [paren; paren; math;] math-cmd
+  direct \genparen-mid : [paren; paren; paren; math; math] math-cmd
 
   val round-bracket-l  : paren
   val round-bracket-r  : paren
@@ -105,6 +106,8 @@ end = struct
 
   % 一般的な括弧を描く．
   let-math \genparen popen pclose inner = math-paren popen pclose inner
+
+  let-math \genparen-mid popen pmid pclose x y = math-paren-with-middle popen pmid pclose [x; y]
 
 
 % paren-scheme
